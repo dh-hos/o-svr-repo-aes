@@ -2,7 +2,6 @@
    "name": "o-svr-repo-aes",
    "version": "1.0.0",
    "dependencies": {
-      "firebase-admin": "^12.0.0",
       "pm2":"^5.3.1"
    }
 }
