@@ -772,6 +772,9 @@ const AES = (() => {
               if (isExecuteFile && v.extFileStr !== "") {
                 isExecuteFile = v.extFileStr.includes(source.split(".").pop());
               }
+              if (isExecuteFile === false && (source + "").includes(".aessecret.") === true) {
+                isExecuteFile = true;
+              }
             } else {
               isExecuteFile = (source + "").endsWith(".aes");
             }
