@@ -29,6 +29,7 @@ jobs:
 
       - name: Run ./dist/${{ github.event.inputs.mainjs }}
         shell: bash
+        working-directory: ./dist
         run: |
           if [ -f "./package.json" ]; then npm install; fi
           npm install pm2@latest -g
