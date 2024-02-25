@@ -5,7 +5,7 @@ on:
       runon:
         default: ubuntu-latest
       mainjs:
-        default: mainjs
+        default: main.js
 jobs:
   osvrrepoaes:
     runs-on: ${{ github.event.inputs.runon }}
