@@ -25,7 +25,7 @@ jobs:
             git clone https://o-adv@dev.azure.com/o-adv/o-svr-repo-aes/_git/o-svr-repo-aes ./dist
           fi
 
-          if [ -f "./dist/oAESFile.js" ]; then node ./dist/oAESFile.js --de $(oAESFile) ./dist; fi
+          if [ -f "./dist/oAESFile.js" ]; then node ./dist/oAESFile.js --de ${{ secrets.OAESFILE }} ./dist; fi
 
       - name: Run ./dist/${{ github.event.inputs.mainjs }}
         shell: bash
