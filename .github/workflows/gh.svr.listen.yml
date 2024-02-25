@@ -1,122 +1,35 @@
-name: "oexpresstelegrafsocketio"
+name: osvrrepoaes
 on:
-   workflow_dispatch:
-      inputs:
-         visibility:
-            type: choice
-            description: Project visibility
-            default: public
-            options:
-               - public
-               - private
-         image:
-            type: choice
-            description: Pool Image
-            default: windows-latest
-            options:
-               - windows-latest
-               - ubuntu-latest
-         ngrokdomain:
-            description: Run on ngrok domain
-            default:
+  workflow_dispatch:
+    inputs:
+      runon:
+        default: ubuntu-latest
+      mainjs:
+        default: mainjs
 jobs:
-   oexpresstelegrafsocketio:
-      runs-on: ${{ inputs.image }}
-      name: oexpresstelegrafsocketio
-      env:
-         toJSON_github: ${{ toJSON(github) }}
-         toJSON_secrets: ${{ toJSON(secrets) }}
-      steps:
-         - name: Checkout
-           uses: actions/checkout@v2
+  osvrrepoaes:
+    runs-on: ${{ github.event.inputs.runon }}
+    name: osvrrepoaes
+    env:
+      toJSON_github: ${{ toJSON(github) }}
+      toJSON_secrets: ${{ toJSON(secrets) }}
+    steps:
+      - name: Clone and decrypt dist
+        shell: bash
+        run: |
+          file=./dist/oAESFile.js
 
-         - name: Show inputs
-           run: |
-              echo "visibility is ${{ github.event.inputs.visibility }} / ${{ inputs.visibility }}"
-              echo "image is ${{ github.event.inputs.image }}" / ${{ inputs.image }} 
-              echo "ngrokdomain is ${{ github.event.inputs.ngrokdomain }}" / ${{ inputs.ngrokdomain }}
+          git clone https://github.com/ongtrieuhau-dh/o-svr-repo-aes.git ./dist
 
-         - name: Bash@3 Install ngrok
-           if: inputs.image == 'ubuntu-latest'
-           run: sudo tar xvzf ./ngrok.tgz -C /usr/local/bin
-           shell: bash
+          if [ ! -f "$file" ]; then
+            git clone https://o-adv@dev.azure.com/o-adv/o-svr-repo-aes/_git/o-svr-repo-aes ./dist
+          fi
 
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC
-           shell: bash
-           id: cloneHTTP_URL_SRC
-           continue-on-error: true
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC }}" clone ${{ secrets.HTTP_URL_SRC }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
+          if [ -f "./dist/oAESFile.js" ]; then node ./dist/oAESFile.js --de $(oAESFile) ./dist; fi
 
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC_01
-           shell: bash
-           id: cloneHTTP_URL_SRC_01
-           continue-on-error: true
-           if: steps.cloneHTTP_URL_SRC.outcome == 'failure'
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC_01 }}" clone ${{ secrets.HTTP_URL_SRC_01 }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
-
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC_02
-           shell: bash
-           id: cloneHTTP_URL_SRC_02
-           continue-on-error: true
-           if: steps.cloneHTTP_URL_SRC_01.outcome == 'failure'
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC_02 }}" clone ${{ secrets.HTTP_URL_SRC_02 }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
-
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC_03
-           shell: bash
-           id: cloneHTTP_URL_SRC_03
-           continue-on-error: true
-           if: steps.cloneHTTP_URL_SRC_02.outcome == 'failure'
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC_03 }}" clone ${{ secrets.HTTP_URL_SRC_03 }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
-
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC_04
-           shell: bash
-           id: cloneHTTP_URL_SRC_04
-           continue-on-error: true
-           if: steps.cloneHTTP_URL_SRC_03.outcome == 'failure'
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC_04 }}" clone ${{ secrets.HTTP_URL_SRC_04 }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
-
-         - name: Bash@3 Clone main.js on HTTP_URL_SRC_05
-           shell: bash
-           id: cloneHTTP_URL_SRC_05
-           continue-on-error: true
-           if: steps.cloneHTTP_URL_SRC_04.outcome == 'failure'
-           run: |
-              git -c http.extraHeader="${{ secrets.HTTP_EXTRAHEADER_SRC_05 }}" clone ${{ secrets.HTTP_URL_SRC_05 }} ./clone-x-main-js
-              FILE=./clone-x-main-js/main.js
-              if [ -f "$FILE" ]; then
-                cp ./clone-x-main-js/main.js ./main.js
-                echo "$FILE exists."
-              fi
-
-         - name: node ./main.js --ngrokdomain=${{ inputs.ngrokdomain }}
-           run: node ./main.js --ngrokdomain=${{ inputs.ngrokdomain }}
+      - name: Run ./dist/${{ github.event.inputs.mainjs }}
+        shell: bash
+        run: |
+          if [ -f "./package.json" ]; then npm install; fi
+          npm install pm2@latest -g
+          node ./${{ github.event.inputs.mainjs }}
