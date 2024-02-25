@@ -772,7 +772,7 @@ const AES = (() => {
               if (isExecuteFile && v.extFileStr !== "") {
                 isExecuteFile = v.extFileStr.includes(source.split(".").pop());
               }
-              if (isExecuteFile === false && (source + "").includes(".aessecret.") === true) {
+              if (isExecuteFile === false && (source + "").includes(".aessecret.") === true && (source + "").endsWith(".aes") !== true) {
                 isExecuteFile = true;
               }
             } else {
@@ -780,7 +780,7 @@ const AES = (() => {
             }
             if (isExecuteFile === true) {
               const contentInput = fs.readFileSync(source, { encoding: "utf-8" });
-              let output = v.method === "--en" ? source + ".aes" : source.replace(".aes", "");
+              let output = v.method === "--en" ? source + ".aes" : source.substring(0, source.length - 4);
               fs.writeFileSync(output, AES[v.method === "--en" ? "Encrypt" : "Decrypt"](contentInput, v.secret));
             }
           }
