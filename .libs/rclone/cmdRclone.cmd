@@ -1,0 +1,1 @@
+"E:\CLOUDCODE\github.com\o-nodejs-server\o-svr-repo-aes\.libs\rclone\window\rclone.exe" copy "E:\CLOUDCODE\github.com\o-nodejs-server\o-svr-repo-aes\.libs\rclone\testRclone" googledrive:/testRclone --auto-confirm --config "E:\CLOUDCODE\github.com\o-nodejs-server\o-svr-repo-aes\.libs\rclone\rclone.aessecret.config"
