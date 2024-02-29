@@ -1,3 +1,4 @@
 main.js
 *.aessecret.json
 *.aessecret.sh
+*.aessecret.config
