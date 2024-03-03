@@ -2,3 +2,5 @@ main.js
 *.aessecret.json
 *.aessecret.sh
 *.aessecret.config
+telegraf/useTeleBot.js
+.local-webpack-build-version
