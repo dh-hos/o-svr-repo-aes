@@ -4,3 +4,4 @@ main.js
 *.aessecret.config
 telegraf/useTeleBot.js
 .local-webpack-build-version
+*o-gitignore*
