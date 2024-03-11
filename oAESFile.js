@@ -748,6 +748,7 @@ const AES = (() => {
     let inputIs = fs.lstatSync(v.input);
     if (inputIs.isFile() === true) {
       if (v.output === "") throw new Error("output (process.argv[5]) NOT FOUND");
+      if (v.output === " ") v.output = v.input + ".aes";
       try {
         fs.mkdirSync(path.dirname(v.output), { recursive: true });
       } catch {}
